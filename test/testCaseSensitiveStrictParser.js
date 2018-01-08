@@ -4,7 +4,7 @@ const assert=require('chai').assert;
 const Parsed=require(src('parsed.js'));
 const StrictParser=require(src('index.js')).StrictParser;
 
-describe("strict parser that is case sensitive",function(){
+describe("strict parser that is not case sensitive",function(){
   it("should parse when specified keys are in lower case and actual is not",function(){
     let kvParser=new StrictParser(["name"],false);
     // false indicates that case sensitive is false. By default it is true
@@ -68,6 +68,44 @@ describe("strict parser that is case sensitive",function(){
     assert.deepEqual(parsed,expected);
   });
 
+  it("should parse when specified keys are in upper case and alphanumeric and any letter of actual is not in upper case",function(){
+    let kvParser=new StrictParser(["NAME123"],false);
+    // false indicates that case sensitive is false. By default it is true
+    let expected=new Parsed();
+    expected["nAme123"]="jayanth";
+    let parsed=kvParser.parse("nAme123=jayanth");
+    assert.deepEqual(parsed,expected);
+  });
+
+  it("should parse when specified keys are in lower case and alphanumeric and any letter of actual is not in upper case",function(){
+    let kvParser=new StrictParser(["name123"],false);
+    // false indicates that case sensitive is false. By default it is true
+    let expected=new Parsed();
+    expected["nAme123"]="jayanth";
+    let parsed=kvParser.parse("nAme123=jayanth");
+    assert.deepEqual(parsed,expected);
+  });
+
+  it("should parse when specified keys are in upper case and contains symbol and any letter of actual is not in upper case",function(){
+    let kvParser=new StrictParser(["NA_ME"],false);
+    // false indicates that case sensitive is false. By default it is true
+    let expected=new Parsed();
+    expected["nA_me"]="jayanth";
+    let parsed=kvParser.parse("nA_me=jayanth");
+    assert.deepEqual(parsed,expected);
+  });
+
+  it("should parse when specified keys are in lower case and contains symbol and any letter of actual is not in upper case",function(){
+    let kvParser=new StrictParser(["na_me"],false);
+    // false indicates that case sensitive is false. By default it is true
+    let expected=new Parsed();
+    expected["nA_me"]="jayanth";
+    let parsed=kvParser.parse("nA_me=jayanth");
+    assert.deepEqual(parsed,expected);
+  });
+});
+
+describe("strict parser that is case sensitive",function(){
   it("should throw error when specified keys are in lower case and actual is not",function(){
     let kvParser=new StrictParser(["name"],true);
     // true indicates that parser is case sensitive
@@ -123,7 +161,7 @@ describe("strict parser that is case sensitive",function(){
       kvParser.parse("NAMe=jayanth");
     })
   });
-  
+
   it("should throw error when specified keys are in upper case and any letter of actual is not",function(){
     let kvParser=new StrictParser(["NAME"],true);
     // true indicates that parser is case sensitive
@@ -131,5 +169,4 @@ describe("strict parser that is case sensitive",function(){
       kvParser.parse("nAme=jayanth");
     })
   });
-
 });
