@@ -13,4 +13,5 @@ describe("strict parser that is case insensitive",function(){
     let parsed=kvParser.parse("NAME=jayanth");
     assert.deepEqual(parsed,expected);
   });
+
 });
